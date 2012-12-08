@@ -8,23 +8,38 @@ from PyQt4 import QtGui, QtCore
 from collections import deque
 from subpanel.subPanelTemplate import subpanel
 from subpanel.dataPlot.dataPlotWindow import Ui_plotWindow
-import pyqtgraph as pg
+
+import numpy
+import pylab
+
+#import pyqtgraph as pg
 
 class dataPlot(QtGui.QWidget, subpanel):
     def __init__(self):
         QtGui.QWidget.__init__(self)
         subpanel.__init__(self)
 
-        pg.setConfigOption('background', (255,255,255))
-        pg.setConfigOption('foreground', (128,128,128))
+        #pg.setConfigOption('background', (255,255,255))
+        #pg.setConfigOption('foreground', (128,128,128))
         
         self.ui = Ui_plotWindow()
         self.ui.setupUi(self)
-        self.ui.graphicsView.hideAxis('bottom')
+        
+
+        #self.ui.axes.set_axis_bgcolor('white')
+        #self.ui.axes.get_title().set_visible(False)
+        self.ui.axes.get_xaxis().set_visible(False)
+
+        pylab.setp(self.ui.axes.get_yticklabels(), fontsize=8)
+
+        self.ui.axes.grid(True, color='gray')
+
+
+        #self.ui.graphicsView.hideAxis('bottom')
         #self.ui.graphicsView.showGrid(y=True)
-        self.ui.graphicsView.getAxis('top').setHeight(10)
-        self.ui.graphicsView.getAxis('bottom').setHeight(10)
-        self.ui.graphicsView.getAxis('left').setWidth(50)
+        #self.ui.graphicsView.getAxis('top').setHeight(10)
+        #self.ui.graphicsView.getAxis('bottom').setHeight(10)
+        #self.ui.graphicsView.getAxis('left').setWidth(50)
         #self.ui.graphicsView.enableAutoRange(False)
         self.plotCount = 0
         self.legend = None
@@ -49,9 +64,15 @@ class dataPlot(QtGui.QWidget, subpanel):
         plotNames = self.xml.findall(self.xmlSubPanel + "/PlotName")
         self.plotCount = len(plotNames)
 
+        self.plots = []
         self.output = []
         for i in range(self.plotCount):
             self.output.append(deque([0.0]*plotSize))
+            self.plots.append(self.ui.axes.plot(
+                self.output[i], 
+                linewidth=1,
+                color=(self.colors[i].redF(), self.colors[i].greenF(), self.colors[i].blueF())
+            )[0])
             
         self.axis = deque(range(plotSize))
         self.value = plotSize
@@ -64,6 +85,7 @@ class dataPlot(QtGui.QWidget, subpanel):
             newLine.setBackgroundColor(0, self.colors[i])
             newLine.setText(1, plotName + "   ")
             newLine.setText(2, "0.000")
+
         self.ui.treeWidget.resizeColumnToContents(0)
         self.ui.treeWidget.resizeColumnToContents(1)
         self.legend = self.ui.treeWidget.invisibleRootItem()
@@ -80,19 +102,33 @@ class dataPlot(QtGui.QWidget, subpanel):
     def readContinuousData(self):
         '''This method continually reads telemetry from the AeroQuad'''
         if self.comm.isConnected() == True: 
-            if self.comm.dataAvailable():           
+            if self.comm.dataAvailable():
+                yMinimum, yMaximum = 0, 0
+
                 rawData = self.comm.read()
                 data = rawData.split(",")
-                self.ui.graphicsView.clear()
+                #self.ui.graphicsView.clear()
                 for i in range(self.plotCount):
                     legendRow = self.legend.child(i)
                     if legendRow.checkState(0) == 2:
                         try:
                             dataValue = data[i + self.plotIndex]
                             self.output[i].appendleft(float(dataValue))
+                            #if len(self.output[i]) > 25:
                             self.output[i].pop()
+                            legendRow.setText(2, dataValue)
                         except:
                             pass # Do not update output data if invalid number detected from comm read
-                        self.ui.graphicsView.plot(y=list(self.output[i]), pen=pg.mkPen(self.colors[i], width=2))
-                        legendRow.setText(2, dataValue)
+                        #self.ui.graphicsView.plot(y=list(self.output[i]), pen=pg.mkPen(self.colors[i], width=2))
+                        
 
+                        yMinimum = round(min(yMinimum, min(self.output[i])), 0) - 1
+                        yMaximum = round(max(yMaximum, max(self.output[i])), 0) + 1
+
+                        self.ui.axes.set_xbound(lower=0, upper=128)
+                        self.ui.axes.set_ybound(lower=yMinimum, upper=yMaximum)
+
+                        self.plots[i].set_xdata(numpy.arange(len(self.output[i])))
+                        self.plots[i].set_ydata(numpy.array(self.output[i]))
+
+                        self.ui.graphicsView.draw()
