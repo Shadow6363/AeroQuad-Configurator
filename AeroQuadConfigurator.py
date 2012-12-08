@@ -311,8 +311,8 @@ if __name__ == "__main__":
 
     MainWindow = AQMain()
     MainWindow.show()
+    MainWindow.center()
     if sys.platform == 'darwin':
         MainWindow.raise_()
-    MainWindow.center()
     splash.finish(MainWindow)
     sys.exit(app.exec_())
