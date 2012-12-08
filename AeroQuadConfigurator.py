@@ -98,6 +98,8 @@ class AQMain(QtGui.QMainWindow):
             for index in range(len(self.subPanelMenu)):
                 hide = self.checkRequirementsMatch(self.subPanelList[index])
                 self.subPanelMenu[index].setVisible(hide)
+            # Load configuration screen
+            self.selectSubPanel("Vehicle Configuration")
             self.restartSubPanel()
         else:
             self.disconnect()
@@ -114,6 +116,7 @@ class AQMain(QtGui.QMainWindow):
         self.ui.comPort.setEnabled(True)
         self.ui.baudRate.setEnabled(True)
         self.ui.status.setText("Disconnected from the AeroQuad")
+        self.boardConfiguration = []
         self.restartSubPanel()
 
     def updateDetectedPorts(self):
@@ -264,7 +267,7 @@ class AQMain(QtGui.QMainWindow):
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    app.setStyle("plastique")
+    #app.setStyle("plastique")
     
     splash_pix = QtGui.QPixmap('./resources/AQ.png')
     splash = QtGui.QSplashScreen(splash_pix, QtCore.Qt.WindowStaysOnTopHint)
@@ -274,5 +277,7 @@ if __name__ == "__main__":
     
     MainWindow = AQMain()
     MainWindow.show()
+    if sys.platform == 'darwin':
+        MainWindow.raise_()
     splash.finish(MainWindow)
     sys.exit(app.exec_())
