@@ -8,8 +8,10 @@ from PyQt4 import QtGui, QtCore
 from collections import deque
 from subpanel.subPanelTemplate import subpanel
 from subpanel.dataPlot.dataPlotWindow import Ui_plotWindow
+from matplotlib import animation
+from matplotlib.figure import Figure
 
-import numpy
+import numpy as np
 import pylab
 
 #import pyqtgraph as pg
@@ -64,15 +66,35 @@ class dataPlot(QtGui.QWidget, subpanel):
         plotNames = self.xml.findall(self.xmlSubPanel + "/PlotName")
         self.plotCount = len(plotNames)
 
-        self.plots = []
+        #window_color = QtGui.QApplication.palette().color(QtGui.QPalette.Window)
+        #facecolor    = (window_color.redF(), window_color.greenF(), window_color.blueF())
+
+        #self.ui.figure = Figure((5.5, 3.5), dpi=110, facecolor=facecolor, tight_layout=True)
+        #self.ui.axes = self.ui.figure.add_subplot(111)
+
+        #self.ui.axes.clear()
+        #self.ui.axes.cla()
+
+        #self.ui.figure.clear()
+        #self.ui.axes.clear()
+
+        self.ui.axes.get_xaxis().set_visible(False)
+
+        pylab.setp(self.ui.axes.get_yticklabels(), fontsize=8)
+
+        self.ui.axes.grid(True, color='gray')
+
+        self.lines = []
         self.output = []
         for i in range(self.plotCount):
             self.output.append(deque([0.0]*plotSize))
-            self.plots.append(self.ui.axes.plot(
-                self.output[i], 
-                linewidth=1,
+            self.lines.append(self.ui.axes.plot(
+                [], 
+                linewidth=1.5,
                 color=(self.colors[i].redF(), self.colors[i].greenF(), self.colors[i].blueF())
             )[0])
+
+        #self.lines = tuple(self.lines)
             
         self.axis = deque(range(plotSize))
         self.value = plotSize
@@ -90,6 +112,10 @@ class dataPlot(QtGui.QWidget, subpanel):
         self.ui.treeWidget.resizeColumnToContents(1)
         self.legend = self.ui.treeWidget.invisibleRootItem()
 
+        self.anim = animation.FuncAnimation(self.ui.figure, self.animate, init_func=self.init, frames=200, interval=20, blit=True)
+
+        self.ui.graphicsView.draw()
+
             
         if self.comm.isConnected() == True:
             telemetry = self.xml.find(self.xmlSubPanel + "/Telemetry").text
@@ -98,6 +124,37 @@ class dataPlot(QtGui.QWidget, subpanel):
             self.timer = QtCore.QTimer()
             self.timer.timeout.connect(self.readContinuousData)
             self.timer.start(5)
+    
+    def stop(self):
+        '''This method enables a flag which closes the continuous serial read thread'''
+        if self.comm.isConnected() == True:
+            if self.timer != None:
+                self.timer.timeout.disconnect(self.readContinuousData)
+                self.timer.stop()
+        #self.ui.figure.clf()
+        #self.ui.axes = self.ui.figure.add_subplot(111)
+        #self.ui.graphicsView = FigureCanvas(self.ui.figure)
+        #print 'stopped'
+        #self.anim = None
+        #self.ui.axes.clear()
+
+    def init(self):
+        #print 'init'
+        for line in self.lines:
+            line.set_data([], [])
+        return self.lines
+
+    def animate(self, i):
+        #print 'animate'
+
+        #self.ui.axes.set_xbound(lower=0, upper=128)
+        #self.ui.axes.set_ybound(lower=yMinimum, upper=yMaximum)
+
+        for j in range(self.plotCount):
+            self.lines[j].set_data(np.arange(len(self.output[j])), np.array(self.output[j]))
+        return self.lines
+
+
 
     def readContinuousData(self):
         '''This method continually reads telemetry from the AeroQuad'''
@@ -128,7 +185,7 @@ class dataPlot(QtGui.QWidget, subpanel):
                         self.ui.axes.set_xbound(lower=0, upper=128)
                         self.ui.axes.set_ybound(lower=yMinimum, upper=yMaximum)
 
-                        self.plots[i].set_xdata(numpy.arange(len(self.output[i])))
-                        self.plots[i].set_ydata(numpy.array(self.output[i]))
+                        #self.plots[i].set_xdata(numpy.arange(len(self.output[i])))
+                        #self.plots[i].set_ydata(numpy.array(self.output[i]))
 
-                        self.ui.graphicsView.draw()
+                        #self.ui.graphicsView.draw()

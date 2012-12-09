@@ -33,6 +33,10 @@ class Ui_plotWindow(object):
 
         self.graphicsView = FigureCanvas(self.figure)
 
+        FigureCanvas.setSizePolicy(self.graphicsView,
+                                   QtGui.QSizePolicy.Expanding,
+                                   QtGui.QSizePolicy.Expanding)
+
         
 
         #self.graphicsView = PlotWidget(plotWindow)
