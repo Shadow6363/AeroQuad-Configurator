@@ -5,7 +5,7 @@ Created on Nov 6, 2012
 @author: Ted Carancho
 '''
 import sys
-#import time
+import time
 
 from PyQt4 import QtCore, QtGui
 from ui.mainWindow import Ui_MainWindow
@@ -25,9 +25,9 @@ class AQMain(QtGui.QMainWindow):
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        # TODO: figure out way to configure for different comm types (TCP, MAVLINK, etc) 
+        # TODO: figure out way to configure for different comm types (TCP, MAVLINK, etc)
         self.comm = AQSerial()
-        
+
         # Default main window conditions
         self.ui.buttonDisconnect.setEnabled(False)
         self.ui.buttonConnect.setEnabled(True)
@@ -38,19 +38,19 @@ class AQMain(QtGui.QMainWindow):
         self.updateComPortSelection()
         self.updateBaudRates()
         self.boardConfiguration = []
-        
+
         # Update comm port combo box to use last used comm port
         defaultComPort = xml.find("./Settings/DefaultComPort").text
         commIndex = self.ui.comPort.findText(defaultComPort)
         if commIndex == -1:
             commIndex = 0
         self.ui.comPort.setCurrentIndex(commIndex)
-        
+
         # Load splash screen
-        self.subPanel = Ui_splashScreen()
-        self.subPanel.setupUi(self.subPanel)
-        self.ui.subPanel.addWidget(self.subPanel)
-        
+        splash = Ui_splashScreen()
+        splash.setupUi(splash)
+        self.ui.subPanel.addWidget(splash)
+
         # Dynamically configure board type menu and subPanel menu from XML configuration file
         self.configureSubPanelMenu()
         self.activeSubPanel = None
@@ -64,8 +64,7 @@ class AQMain(QtGui.QMainWindow):
         self.ui.actionBootUpDelay.triggered.connect(self.updateBootUpDelay)
         self.ui.actionCommTimeout.triggered.connect(self.updateCommTimeOut)
 
-
-    ####### Communication Methods #######       
+    ####### Communication Methods #######
     def connect(self):
         '''Initiates communication with the AeroQuad'''
         # Setup GUI
@@ -76,7 +75,7 @@ class AQMain(QtGui.QMainWindow):
         self.ui.baudRate.setEnabled(False)
         # Update the GUI
         app.processEvents()
-        
+
         # Setup serial port
         bootupDelay = float(xml.find("./Settings/BootUpDelay").text)
         commTimeOut = float(xml.find("./Settings/CommTimeOut").text)
@@ -106,7 +105,7 @@ class AQMain(QtGui.QMainWindow):
             self.disconnect()
             self.ui.status.setText("Not connected to the AeroQuad")
             QtGui.QMessageBox.information(self, "Connection Error", "Unable to connect to the AeroQuad.  Try increasing the Boot Up Delay.\nThis is found under File->Preferences->Boot Up Delay.")
-        
+
     def disconnect(self):
         '''Disconnect from the AeroQuad'''
         self.comm.write(xml.find("./Settings/StopTelemetry").text)
@@ -130,10 +129,10 @@ class AQMain(QtGui.QMainWindow):
         elif selection == "Autoconnect":
             self.ui.comPort.setCurrentIndex(0)
             self.ui.status.setText("This feature still under construction")
-            
+
     def autoConnect(self):
         pass
-    
+
     def updateBootUpDelay(self):
         '''Creates dialog box to ask user for desired boot up delay.
         This delay waits for Arduino based boards to finish booting up before sending commands.
@@ -143,7 +142,7 @@ class AQMain(QtGui.QMainWindow):
         if ok:
             xml.find("./Settings/BootUpDelay").text = str(data)
             xml.write("AeroQuadConfigurator.xml")
- 
+
     def updateCommTimeOut(self):
         '''Creates dialog box to ask user for desired comm timeout.
         This is timeout value used by serial drivers to wait for response from device
@@ -162,13 +161,13 @@ class AQMain(QtGui.QMainWindow):
         self.ui.comPort.insertSeparator(self.ui.comPort.count())
         self.ui.comPort.addItem("Autoconnect")
         self.ui.comPort.addItem("Refresh")
-        
+
     def storeComPortSelection(self):
         '''Stores comm port selection to xml file for later recall'''
         xml.find("./Settings/DefaultBaudRate").text = str(self.ui.baudRate.currentText())
         xml.find("./Settings/DefaultComPort").text = str(self.ui.comPort.currentText())
         xml.write("AeroQuadConfigurator.xml")
-               
+
     def updateBaudRates(self):
         '''Reads baud rates from xml and displays in combo box.
         Updates the xml file to display different baud rates
@@ -178,7 +177,7 @@ class AQMain(QtGui.QMainWindow):
         baudRate = baudRates.split(',')
         for i in baudRate:
             self.ui.baudRate.addItem(i)
-        self.ui.baudRate.setCurrentIndex(baudRate.index(defaultBaudRate))     
+        self.ui.baudRate.setCurrentIndex(baudRate.index(defaultBaudRate))
 
 
     ####### SubPanel Methods #######
@@ -204,7 +203,7 @@ class AQMain(QtGui.QMainWindow):
             module = getattr(module, className)
             tempSubPanel = module()
             #self.subPanelList.append(subPanel.name)
-            #tempSubPanel = subPanel.module           
+            #tempSubPanel = subPanel.module
             tempSubPanel.initialize(self.comm, xml, self.ui, self.boardConfiguration)
             self.ui.subPanel.addWidget(tempSubPanel)
             self.subPanelClasses.append(tempSubPanel)
@@ -242,8 +241,8 @@ class AQMain(QtGui.QMainWindow):
 #            self.subPanelMapper.setMapping(subPanel, subPanelName)
 #            subPanel.triggered.connect(self.subPanelMapper.map)
 #            subPanel.setCheckable(True)
-#        self.subPanelMapper.mapped[str].connect(self.selectSubPanel)        
-  
+#        self.subPanelMapper.mapped[str].connect(self.selectSubPanel)
+
     def selectSubPanel(self, subPanelName):
         '''Places check mark beside selected subpanel name
         Menu item instances stored in dedicated list because Python only updates during runtime making everything point to the last item in the list
@@ -257,7 +256,7 @@ class AQMain(QtGui.QMainWindow):
         self.subPanelMenu[selected].setChecked(True)
         self.ui.subPanel.setCurrentIndex(selected+1) # index 0 is splash screen
         self.activeSubPanel = self.subPanelClasses[selected]
-        selectedSubPanelName = "./Subpanels/Subpanel/[@Name='" + str(subPanelName) + "']" 
+        selectedSubPanelName = "./Subpanels/Subpanel/[@Name='" + str(subPanelName) + "']"
         self.activeSubPanelName = selectedSubPanelName
         self.activeSubPanel.start(selectedSubPanelName)
         self.ui.status.setText(subPanelName)
@@ -267,12 +266,12 @@ class AQMain(QtGui.QMainWindow):
         ''' Clear subPanel menu and disconnect subPanel related signals'''
         self.ui.menuView.clear()
         self.subPanelMapper.mapped[str].disconnect(self.selectSubPanel)
-        
+
     def restartSubPanel(self):
         if self.activeSubPanel != None: # Restart any running subpanels
             self.activeSubPanel.stop()
             self.activeSubPanel.start(self.activeSubPanelName)
-            
+
     def checkRequirementsMatch(self, subPanelName):
         # Read requirements for the specified subpanel form the XML config file
         xmlRequirement = "./Subpanels/Subpanel/[@Name='" + subPanelName +"']/Requirement"
@@ -294,20 +293,26 @@ class AQMain(QtGui.QMainWindow):
         self.comm.disconnect()
         sys.exit(app.exec_())
 
+    def center(self):
+        qr = self.frameGeometry()
+        cp = QtGui.QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     #app.setStyle("plastique")
-    
+
     splash_pix = QtGui.QPixmap('./resources/AQ.png')
     splash = QtGui.QSplashScreen(splash_pix, QtCore.Qt.WindowStaysOnTopHint)
     splash.setMask(splash_pix.mask())
     splash.show()
     app.processEvents()
-    
+
     MainWindow = AQMain()
     MainWindow.show()
     if sys.platform == 'darwin':
         MainWindow.raise_()
+    MainWindow.center()
     splash.finish(MainWindow)
     sys.exit(app.exec_())
