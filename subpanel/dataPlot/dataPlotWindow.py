@@ -29,7 +29,7 @@ class Ui_plotWindow(object):
         facecolor    = (window_color.redF(), window_color.greenF(), window_color.blueF())
 
         self.figure = Figure((5.5, 3.5), dpi=110, facecolor=facecolor, tight_layout=True)
-        self.axes = self.figure.add_subplot(111)
+        #self.axes = self.figure.add_subplot(111)
 
         self.graphicsView = FigureCanvas(self.figure)
 
