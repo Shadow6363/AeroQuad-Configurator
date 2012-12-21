@@ -8,6 +8,7 @@ Created on Nov 21, 2012
 from PySide import QtCore, QtGui
 from collections import deque
 from numpy import arange, zeros
+from random import random, uniform
 from scipy.special import jn
 
 # Enthought library imports
