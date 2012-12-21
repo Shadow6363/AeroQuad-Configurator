@@ -219,7 +219,7 @@ class dataPlot(QtGui.QWidget, subpanel):
                             self.animated_plots[i].y_values.insert(0, dataValue)
                             self.animated_plots[i].y_values.pop()
 
-                            legendRow.setText(2, dataValue)
+                            self.animated_plots[i].timer_tick()
                         except:
                             pass # Do not update output data if invalid number detected from comm read
                     else:
