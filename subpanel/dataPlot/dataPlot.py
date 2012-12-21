@@ -65,6 +65,7 @@ class AnimatedPlot(HasTraits):
 
         plot = create_line_plot((self.x_values,self.y_values),
                                 color=color, bgcolor=bgcolor, width=2.0)
+        plot.downsample = True
         plot.resizable = "hv"
 
         self.plot = plot
