@@ -115,6 +115,8 @@ class dataPlot(QtGui.QWidget, subpanel):
                                          fill_padding=True)
 
         self.animated_plots = []
+        self.disabled_plots = []
+        self.underlays_plot = None
         self.datagens = []
         index_mapper = None
         value_mapper = None
@@ -123,8 +125,9 @@ class dataPlot(QtGui.QWidget, subpanel):
             if value_mapper is None:
                 index_mapper = animated_plot.plot.index_mapper
                 value_mapper = animated_plot.plot.value_mapper
-                add_default_grids(animated_plot.plot)
-                add_default_axes(animated_plot.plot)
+                self.grids = add_default_grids(animated_plot.plot)
+                self.axes  = add_default_axes(animated_plot.plot)
+                self.underlays_plot = i
             else:
                 animated_plot.plot.index_mapper = index_mapper
                 index_mapper.range.add(animated_plot.plot.index)
@@ -194,8 +197,22 @@ class dataPlot(QtGui.QWidget, subpanel):
 
                 for i in range(self.plotCount):
                     legendRow = self.legend.child(i)
+
+                    dataValue = 0.000
+
                     if legendRow.checkState(0) == 2:
-                        self.animated_plots[i].plot.visible = True
+                        if self.underlays_plot is None:
+                            self.animated_plots[i].plot.underlays.append(self.grids[0])
+                            self.animated_plots[i].plot.underlays.append(self.grids[1])
+                            self.animated_plots[i].plot.underlays.append(self.axes[0])
+                            self.animated_plots[i].plot.underlays.append(self.axes[1])
+
+                            self.underlays_plot = i
+
+                        if self.animated_plots[i] in self.disabled_plots:
+                            self.disabled_plots.remove(self.animated_plots[i])
+                            self.animated_plots[i].plot.visible = True
+
                         try:
                             self.animated_plots[i].y_values.insert(0, float(dataValue))
                             dataValue = float(self.datagens[i].next())#data[i + self.plotIndex]
@@ -205,10 +222,20 @@ class dataPlot(QtGui.QWidget, subpanel):
                         except:
                             pass # Do not update output data if invalid number detected from comm read
                     else:
-                        dataValue = '0.000'
-                        self.animated_plots[i].y_values = [0.0] * 128
-                        self.animated_plots[i].plot.visible = False
+                        if self.underlays_plot == i:
+                            self.animated_plots[i].plot.underlays.remove(self.grids[0])
+                            self.animated_plots[i].plot.underlays.remove(self.grids[1])
+                            self.animated_plots[i].plot.underlays.remove(self.axes[0])
+                            self.animated_plots[i].plot.underlays.remove(self.axes[1])
 
-                        legendRow.setText(2, dataValue)
+                            self.underlays_plot = None
 
-                    self.animated_plots[i].timer_tick()
+                        if self.animated_plots[i] not in self.disabled_plots:
+                            self.disabled_plots.append(self.animated_plots[i])
+                            self.animated_plots[i].plot.visible = False
+                            self.animated_plots[i].timer_tick()
+                            self.animated_plots[i].plot.index_mapper.range.remove(self.animated_plots[i].plot.index)
+                            self.animated_plots[i].plot.value_mapper.range.remove(self.animated_plots[i].plot.value)
+                            self.animated_plots[i].plot.request_redraw()
+
+                    legendRow.setText(2, str(round(dataValue, 6)))
