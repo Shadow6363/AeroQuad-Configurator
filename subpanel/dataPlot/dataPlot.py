@@ -109,10 +109,12 @@ class dataPlot(QtGui.QWidget, subpanel):
         x = arange(128)
         y = [0.0] * 128
 
-        container = OverlayPlotContainer(padding=40, bgcolor="white",
+        container = OverlayPlotContainer(padding_top=4, padding_right=1,
+                                         padding_bottom=4, padding_left=32,
+                                         bgcolor="white",
                                          use_backbuffer=True,
                                          border_visible=True,
-                                         fill_padding=True)
+                                         fill_padding=False)
 
         self.animated_plots = []
         self.disabled_plots = []
