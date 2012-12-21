@@ -214,8 +214,8 @@ class dataPlot(QtGui.QWidget, subpanel):
                             self.animated_plots[i].plot.visible = True
 
                         try:
-                            self.animated_plots[i].y_values.insert(0, float(dataValue))
                             dataValue = float(self.datagens[i].next())#data[i + self.plotIndex]
+                            self.animated_plots[i].y_values.insert(0, dataValue)
                             self.animated_plots[i].y_values.pop()
 
                             legendRow.setText(2, dataValue)
