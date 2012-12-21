@@ -33,6 +33,30 @@ COLOR_PALETTE = (
 )
 
 
+class DataGen(object):
+    """ A silly class that generates pseudo-random data for
+        display in the plot.
+    """
+    def __init__(self, init=50):
+        self.data = self.init = init
+
+    def next(self):
+        self._recalc_data()
+        return self.data
+
+    def _recalc_data(self):
+        delta = uniform(-0.5, 0.5)
+        r = random()
+
+        if r > 0.9:
+            self.data += delta * 15
+        elif r > 0.8:
+            # attraction to the initial value
+            delta += (0.5 if self.init > self.data else -0.5)
+            self.data += delta
+        else:
+            self.data += delta
+
 class AnimatedPlot(HasTraits):
     def __init__(self, x, y, color="blue", bgcolor="white"):
         self.x_values = x[:]
@@ -92,6 +116,7 @@ class dataPlot(QtGui.QWidget, subpanel):
                                          fill_padding=True)
 
         self.animated_plots = []
+        self.datagens = []
         index_mapper = None
         value_mapper = None
         for i in range(self.plotCount):
@@ -108,6 +133,7 @@ class dataPlot(QtGui.QWidget, subpanel):
                 value_mapper.range.add(animated_plot.plot.value)
             container.add(animated_plot.plot)
             self.animated_plots.append(animated_plot)
+            self.datagens.append(DataGen())
 
         self.container = container
         return Window(self, -1, component=container)
@@ -154,13 +180,13 @@ class dataPlot(QtGui.QWidget, subpanel):
         self.legend = self.ui.treeWidget.invisibleRootItem()
 
 
-        if self.comm.isConnected() == True:
-            telemetry = self.xml.find(self.xmlSubPanel + "/Telemetry").text
-            if telemetry != "":
-                self.comm.write(telemetry)
+        if True:#self.comm.isConnected() == True:
+            #telemetry = self.xml.find(self.xmlSubPanel + "/Telemetry").text
+            #if telemetry != "":
+            #    self.comm.write(telemetry)
             self.timer = QtCore.QTimer()
             self.timer.timeout.connect(self.readContinuousData)
-            self.timer.start(5)
+            self.timer.start(15)
 
     def stop(self):
         '''This method enables a flag which closes the continuous serial read thread'''
@@ -171,18 +197,18 @@ class dataPlot(QtGui.QWidget, subpanel):
 
     def readContinuousData(self):
         '''This method continually reads telemetry from the AeroQuad'''
-        if self.comm.isConnected() == True:
-            if self.comm.dataAvailable():
-                rawData = self.comm.read()
-                data = rawData.split(",")
+        if True:#self.comm.isConnected() == True:
+            if True:#self.comm.dataAvailable():
+                #rawData = self.comm.read()
+                #data = rawData.split(",")
 
                 for i in range(self.plotCount):
                     legendRow = self.legend.child(i)
                     if legendRow.checkState(0) == 2:
                         self.animated_plots[i].plot.visible = True
                         try:
-                            dataValue = data[i + self.plotIndex]
                             self.animated_plots[i].y_values.insert(0, float(dataValue))
+                            dataValue = float(self.datagens[i].next())#data[i + self.plotIndex]
                             self.animated_plots[i].y_values.pop()
 
                             legendRow.setText(2, dataValue)
