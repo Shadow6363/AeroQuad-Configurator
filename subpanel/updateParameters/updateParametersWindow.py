@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,26 +16,26 @@ except AttributeError:
 
 class Ui_parameterUpdate(object):
     def setupUi(self, parameterUpdate):
-        parameterUpdate.setObjectName(_fromUtf8("parameterUpdate"))
+        parameterUpdate.setObjectName('parameterUpdate')
         parameterUpdate.resize(588, 374)
         self.gridLayout = QtGui.QGridLayout(parameterUpdate)
-        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.gridLayout.setObjectName('gridLayout')
         self.buttonUpload = QtGui.QPushButton(parameterUpdate)
-        self.buttonUpload.setObjectName(_fromUtf8("buttonUpload"))
+        self.buttonUpload.setObjectName('buttonUpload')
         self.gridLayout.addWidget(self.buttonUpload, 2, 5, 1, 1)
         self.listParameterType = QtGui.QListWidget(parameterUpdate)
         self.listParameterType.setMaximumSize(QtCore.QSize(200, 16777215))
         self.listParameterType.setAlternatingRowColors(False)
         self.listParameterType.setResizeMode(QtGui.QListView.Adjust)
-        self.listParameterType.setObjectName(_fromUtf8("listParameterType"))
+        self.listParameterType.setObjectName('listParameterType')
         self.gridLayout.addWidget(self.listParameterType, 0, 0, 1, 1)
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 2, 0, 1, 2)
         self.parameterTable = QtGui.QTableWidget(parameterUpdate)
-        self.parameterTable.setStyleSheet(_fromUtf8(""))
+        self.parameterTable.setStyleSheet('')
         self.parameterTable.setAlternatingRowColors(True)
         self.parameterTable.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
-        self.parameterTable.setObjectName(_fromUtf8("parameterTable"))
+        self.parameterTable.setObjectName('parameterTable')
         self.parameterTable.setColumnCount(3)
         self.parameterTable.setRowCount(0)
         item = QtGui.QTableWidgetItem()
@@ -47,10 +47,10 @@ class Ui_parameterUpdate(object):
         self.parameterTable.horizontalHeader().setStretchLastSection(True)
         self.gridLayout.addWidget(self.parameterTable, 0, 1, 1, 5)
         self.buttonSave = QtGui.QPushButton(parameterUpdate)
-        self.buttonSave.setObjectName(_fromUtf8("buttonSave"))
+        self.buttonSave.setObjectName('buttonSave')
         self.gridLayout.addWidget(self.buttonSave, 2, 4, 1, 1)
         self.buttonLoad = QtGui.QPushButton(parameterUpdate)
-        self.buttonLoad.setObjectName(_fromUtf8("buttonLoad"))
+        self.buttonLoad.setObjectName('buttonLoad')
         self.gridLayout.addWidget(self.buttonLoad, 2, 3, 1, 1)
         spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem1, 2, 2, 1, 1)

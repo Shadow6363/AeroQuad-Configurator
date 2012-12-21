@@ -12,7 +12,8 @@ class subpanel(object):
     Look at commMonitor.py for an example of how to add this subclass to your subpanel.
     '''
 
-    def __init__(self):
+    def __init__(self, parent=None):
+        super(subpanel, self).__init__(parent)
         self.connected = False
         self.timer = None
         self.xml = None
@@ -20,24 +21,25 @@ class subpanel(object):
         self.comm = None
         self.mainUi = None
         self.boardConfiguration = []
-               
-    def initialize(self, commTransport,  xml, mainWindow, boardConfiguration):
+
+    def initialize(self, name, commTransport, xml, mainWindow, boardConfiguration):
         '''This initializes your class with required external arguments'''
+        self.name = name
         self.comm = commTransport
         self.xml = xml
         self.mainUi = mainWindow
         self.boardConfiguration = boardConfiguration
-                
+
     def sendCommand(self, command):
         '''Send a serial command'''
         self.comm.write(command)
         time.sleep(0.150)
-        
+
     def readData(self):
         '''This method reads a single response from the AeroQuad'''
         response = self.comm.read()
         return response
-    
+
     def start(self, xmlSubPanel):
         '''This method starts a timer used for any long running loops in a subpanel'''
         self.xmlSubPanel = xmlSubPanel
@@ -51,8 +53,8 @@ class subpanel(object):
 
     def readContinuousData(self):
         '''This method continually reads telemetry from the AeroQuad'''
-        if self.comm.isConnected() == True: 
-            if self.comm.dataAvailable():           
+        if self.comm.isConnected() == True:
+            if self.comm.dataAvailable():
                 rawData = self.comm.read()
                 data = rawData.split(",")
                 for i in data:
@@ -66,7 +68,7 @@ class subpanel(object):
                 self.comm.flushResponse()
                 self.timer.timeout.disconnect(self.readContinuousData)
                 self.timer.stop()
-        
+
     def timeStamp(self):
         '''Records a timestamp for AeroQuad communication'''
         now = time.time()
@@ -76,7 +78,7 @@ class subpanel(object):
 
     def status(self, message):
         self.mainUi.status.setText(message)
-        
+
     def checkRequirementsMatch(self, xmlRequirementPath):
         # Read requirements for the specified subpanel form the XML config file
         subPanelRequirements = self.xml.findall(xmlRequirementPath)

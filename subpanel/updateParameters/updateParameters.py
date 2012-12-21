@@ -4,14 +4,14 @@ Created on Nov 28, 2012
 @author: Ted Carancho
 '''
 
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 from subpanel.subPanelTemplate import subpanel
 from subpanel.updateParameters.updateParametersWindow import Ui_parameterUpdate
 import time
 
 class updateParameters(QtGui.QWidget, subpanel):
-    def __init__(self):
-        QtGui.QWidget.__init__(self)
+    def __init__(self, parent=None):
+        super(updateParameters, self).__init__(parent)
         subpanel.__init__(self)
         self.ui = Ui_parameterUpdate()
         self.ui.setupUi(self)
@@ -19,12 +19,12 @@ class updateParameters(QtGui.QWidget, subpanel):
         self.ui.buttonLoad.setEnabled(False)
         self.ui.buttonSave.setEnabled(False)
         self.ui.buttonUpload.setEnabled(False)
-        
+
         self.ui.listParameterType.clicked.connect(self.updateSelection)
         self.ui.buttonUpload.clicked.connect(self.updateParameters)
         self.ui.buttonSave.clicked.connect(self.underConstruction)
         self.ui.buttonLoad.clicked.connect(self.underConstruction)
-        
+
     def start(self, xmlSubPanel):
         self.subPanelName = xmlSubPanel
         parameterTypes = self.xml.findall(self.subPanelName + "/ParameterType")
@@ -39,25 +39,25 @@ class updateParameters(QtGui.QWidget, subpanel):
         self.updateSelection()
         self.ui.buttonLoad.setEnabled(self.comm.isConnected())
         self.ui.buttonSave.setEnabled(self.comm.isConnected())
-        self.ui.buttonUpload.setEnabled(self.comm.isConnected())        
-        
+        self.ui.buttonUpload.setEnabled(self.comm.isConnected())
+
     def getXmlLocation(self, value):
         selectedType = str(self.ui.listParameterType.currentItem().text())
         xmlLocation = self.subPanelName + "/ParameterType/[@Name='" + selectedType + "']/" + value
         return xmlLocation
-                   
+
     def updateSelection(self):
         # Generate location of where subpanel values are in XML
         parameterNames = self.xml.findall(self.getXmlLocation("Parameter"))
-        
-        # If connected, query AeroQuad for parameter values        
+
+        # If connected, query AeroQuad for parameter values
         if self.comm.isConnected():
             telemetry = self.xml.find(self.getXmlLocation("Telemetry")).text
             self.comm.write(telemetry)
             time.sleep(0.100)
             response = self.comm.waitForRead()
             telemetryData = response.split(",")
-        
+
         # Fill in each row of parameter table
         rowCount = len(parameterNames)
         self.ui.parameterTable.setRowCount(rowCount)
@@ -78,10 +78,10 @@ class updateParameters(QtGui.QWidget, subpanel):
             self.ui.parameterTable.setItem(currentRow, 0, name)
             self.ui.parameterTable.setCellWidget(currentRow, 1, data)
             self.ui.parameterTable.setItem(currentRow, 2, description)
-            
+
         self.ui.parameterTable.resizeColumnToContents(0)
         self.ui.parameterTable.resizeColumnToContents(1)
-        
+
     def updateParameters(self):
         parameterData = []
         for row in range(self.ui.parameterTable.rowCount()):

@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,22 +16,22 @@ except AttributeError:
 
 class Ui_commMonitor(object):
     def setupUi(self, commMonitor):
-        commMonitor.setObjectName(_fromUtf8("commMonitor"))
+        commMonitor.setObjectName('commMonitor')
         commMonitor.resize(818, 418)
         self.gridLayout = QtGui.QGridLayout(commMonitor)
-        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.gridLayout.setObjectName('gridLayout')
         self.lineEdit = QtGui.QLineEdit(commMonitor)
-        self.lineEdit.setObjectName(_fromUtf8("lineEdit"))
+        self.lineEdit.setObjectName('lineEdit')
         self.gridLayout.addWidget(self.lineEdit, 1, 0, 1, 1)
         self.sendButton = QtGui.QPushButton(commMonitor)
-        self.sendButton.setObjectName(_fromUtf8("sendButton"))
+        self.sendButton.setObjectName('sendButton')
         self.gridLayout.addWidget(self.sendButton, 1, 1, 1, 1)
         self.clearButton = QtGui.QPushButton(commMonitor)
-        self.clearButton.setObjectName(_fromUtf8("clearButton"))
+        self.clearButton.setObjectName('clearButton')
         self.gridLayout.addWidget(self.clearButton, 1, 2, 1, 1)
         self.commLog = QtGui.QTextBrowser(commMonitor)
         self.commLog.setFrameShadow(QtGui.QFrame.Sunken)
-        self.commLog.setObjectName(_fromUtf8("commLog"))
+        self.commLog.setObjectName('commLog')
         self.gridLayout.addWidget(self.commLog, 0, 0, 1, 3)
 
         self.retranslateUi(commMonitor)

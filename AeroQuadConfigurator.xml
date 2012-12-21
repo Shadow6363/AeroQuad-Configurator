@@ -1,8 +1,8 @@
 <Configurator>
 
 	<Settings>
-		<DefaultComPort>COM5</DefaultComPort>
-		<BootUpDelay>0.0</BootUpDelay>
+		<DefaultComPort>COM4</DefaultComPort>
+		<BootUpDelay>3.0</BootUpDelay>
 		<CommTimeOut>1.0</CommTimeOut>
 		<DefaultBaudRate>115200</DefaultBaudRate>
 		<AvailableBaudRates>1200,9600,38400,57600,111111,115200</AvailableBaudRates>
@@ -10,7 +10,7 @@
 		<StopTelemetry>X</StopTelemetry>
 		<BoardConfiguration>#</BoardConfiguration>
 	</Settings>
-	
+
 	<Subpanels>
 		<Subpanel Name="Vehicle Configuration">
 			<Requirement>All</Requirement>
@@ -29,12 +29,7 @@
 				<Vehicle Name="Octo X+">./resources/Octo+.png</Vehicle>
 			</VehicleGraphics>
 		</Subpanel>
-		<Subpanel Name="Vehicle Status">
-			<Requirement>All</Requirement>
-			<Path>vehicleStatus.vehicleStatus</Path>
-			<Class>vehicleStatus</Class>
-			<Telemetry>s</Telemetry>
-		</Subpanel>
+		
 		<Subpanel Name="Update Parameters">
 			<Path>updateParameters.updateParameters</Path>
 			<Class>updateParameters</Class>
@@ -93,8 +88,8 @@
 			<Requirement>Gyroscope: Detected</Requirement>
 			<Requirement>Accelerometer: Detected</Requirement>
 			<Requirement>Magnetometer: Detected</Requirement>
-			<Path>dataPlot.dataPlot</Path> 
-			<Class>dataPlot</Class> 
+			<Path>dataPlot.dataPlot</Path>
+			<Class>dataPlot</Class>
 			<Telemetry>i</Telemetry>
 			<Index>0</Index>
 			<PlotSize>128</PlotSize>
@@ -110,8 +105,8 @@
 		</Subpanel>
 		<Subpanel Name="Gyroscope Data">
 			<Requirement>Gyroscope: Detected</Requirement>
-			<Path>dataPlot.dataPlot</Path> 
-			<Class>dataPlot</Class> 
+			<Path>dataPlot.dataPlot</Path>
+			<Class>dataPlot</Class>
 			<Telemetry>i</Telemetry>
 			<Index>0</Index>
 			<PlotSize>128</PlotSize>
@@ -121,8 +116,8 @@
 		</Subpanel>
 		<Subpanel Name="Accelerometer Data">
 			<Requirement>Accelerometer: Detected</Requirement>
-			<Path>dataPlot.dataPlot</Path> 
-			<Class>dataPlot</Class> 
+			<Path>dataPlot.dataPlot</Path>
+			<Class>dataPlot</Class>
 			<Telemetry>i</Telemetry>
 			<Index>3</Index>
 			<PlotSize>128</PlotSize>
@@ -132,8 +127,8 @@
 		</Subpanel>
 		<Subpanel Name="Magnetometer Data">
 			<Requirement>Magnetometer: Detected</Requirement>
-			<Path>dataPlot.dataPlot</Path> 
-			<Class>dataPlot</Class> 
+			<Path>dataPlot.dataPlot</Path>
+			<Class>dataPlot</Class>
 			<Telemetry>i</Telemetry>
 			<Index>6</Index>
 			<PlotSize>128</PlotSize>
@@ -142,5 +137,5 @@
 			<PlotName>Mag Z Axis</PlotName>
 		</Subpanel>
 	</Subpanels>
-	
+
 </Configurator>

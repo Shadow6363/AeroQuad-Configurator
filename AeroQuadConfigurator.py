@@ -7,7 +7,7 @@ Created on Nov 6, 2012
 import sys
 import time
 
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 from ui.mainWindow import Ui_MainWindow
 from communication.serialCom import AQSerial
 #from subpanel.subPanelConfiguration import subPanelConfiguration
@@ -22,7 +22,7 @@ except AttributeError:
 
 class AQMain(QtGui.QMainWindow):
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        super(AQMain, self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         # TODO: figure out way to configure for different comm types (TCP, MAVLINK, etc)
@@ -204,7 +204,10 @@ class AQMain(QtGui.QMainWindow):
             tempSubPanel = module()
             #self.subPanelList.append(subPanel.name)
             #tempSubPanel = subPanel.module
-            tempSubPanel.initialize(self.comm, xml, self.ui, self.boardConfiguration)
+            tempSubPanel.initialize(
+                "./Subpanels/Subpanel/[@Name='" + subPanel.get("Name") +"']",
+                self.comm, xml, self.ui, self.boardConfiguration
+            )
             self.ui.subPanel.addWidget(tempSubPanel)
             self.subPanelClasses.append(tempSubPanel)
             subPanelCount += 1

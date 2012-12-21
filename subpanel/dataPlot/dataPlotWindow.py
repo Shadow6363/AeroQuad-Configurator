@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,16 +16,18 @@ except AttributeError:
 
 class Ui_plotWindow(object):
     def setupUi(self, plotWindow):
-        plotWindow.setObjectName(_fromUtf8("plotWindow"))
+        plotWindow.setObjectName('plotWindow')
         plotWindow.resize(540, 350)
         plotWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.gridLayout = QtGui.QGridLayout(plotWindow)
-        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.graphicsView = PlotWidget(plotWindow)
-        self.graphicsView.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.graphicsView.setFrameShadow(QtGui.QFrame.Plain)
-        self.graphicsView.setObjectName(_fromUtf8("graphicsView"))
-        self.gridLayout.addWidget(self.graphicsView, 0, 1, 1, 1)
+        self.gridLayout.setObjectName('gridLayout')
+        #self.graphicsView = QtGui.QVBoxLayout(plotWindow)
+        #self.graphicsView.setContentsMargins(0, 0, 0, 0)
+        #self.graphicsView = PlotWidget(plotWindow)
+        #self.graphicsView.setFrameShape(QtGui.QFrame.StyledPanel)
+        #self.graphicsView.setFrameShadow(QtGui.QFrame.Plain)
+        #self.graphicsView.setObjectName('graphicsView')
+        #self.gridLayout.addWidget(self.graphicsView, 0, 1, 1, 1)
         self.treeWidget = QtGui.QTreeWidget(plotWindow)
         self.treeWidget.setMaximumSize(QtCore.QSize(200, 16777215))
         self.treeWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
@@ -33,7 +35,7 @@ class Ui_plotWindow(object):
         self.treeWidget.setItemsExpandable(False)
         self.treeWidget.setExpandsOnDoubleClick(False)
         self.treeWidget.setColumnCount(3)
-        self.treeWidget.setObjectName(_fromUtf8("treeWidget"))
+        self.treeWidget.setObjectName('treeWidget')
         self.treeWidget.header().setVisible(True)
         self.treeWidget.header().setDefaultSectionSize(80)
         self.gridLayout.addWidget(self.treeWidget, 0, 0, 1, 1)
