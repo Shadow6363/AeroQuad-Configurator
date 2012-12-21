@@ -6,7 +6,6 @@ Created on Nov 21, 2012
 
 # Major library imports
 from PySide import QtCore, QtGui
-#from pyface.qt import QtGui
 from collections import deque
 from numpy import arange, zeros
 from scipy.special import jn
@@ -149,16 +148,7 @@ class dataPlot(QtGui.QWidget, subpanel):
         self.plotCount = len(plotNames)
 
         if not self.loaded:
-            '''
             self.enable_win = self._create_window()
-
-            layout = QtGui.QVBoxLayout()
-            layout.setContentsMargins(0, 0, 0, 0)
-            layout.addWidget(self.enable_win.control)
-
-            self.setLayout(layout)
-            '''
-
             self.enable_win = self._create_window()
 
             self.ui.gridLayout.addWidget(self.enable_win.control, 0, 1, 1, 1)
