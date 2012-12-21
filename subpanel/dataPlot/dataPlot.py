@@ -155,10 +155,7 @@ class dataPlot(QtGui.QWidget, subpanel):
 
         if not self.loaded:
             self.enable_win = self._create_window()
-            self.enable_win = self._create_window()
-
             self.ui.gridLayout.addWidget(self.enable_win.control, 0, 1, 1, 1)
-
             self.loaded = True
 
 
