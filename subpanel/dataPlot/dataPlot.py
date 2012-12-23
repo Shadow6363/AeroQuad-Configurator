@@ -180,7 +180,7 @@ class dataPlot(QtGui.QWidget, subpanel):
             #    self.comm.write(telemetry)
             self.timer = QtCore.QTimer()
             self.timer.timeout.connect(self.readContinuousData)
-            self.timer.start(15)
+            self.timer.start(5)
 
     def stop(self):
         '''This method enables a flag which closes the continuous serial read thread'''
@@ -215,7 +215,8 @@ class dataPlot(QtGui.QWidget, subpanel):
                             self.animated_plots[i].plot.visible = True
 
                         try:
-                            dataValue = float(self.datagens[i].next())#data[i + self.plotIndex]
+                            #dataValue = float(data[i + self.plotIndex])
+                            dataValue = float(self.datagens[i].next())
                             self.animated_plots[i].y_values.insert(0, dataValue)
                             self.animated_plots[i].y_values.pop()
 
