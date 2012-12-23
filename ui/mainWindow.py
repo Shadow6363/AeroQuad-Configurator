@@ -74,7 +74,7 @@ class Ui_MainWindow(object):
         self.menuView.setObjectName('menuView')
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName('menuHelp')
-        MainWindow.setMenuBar(self.menubar)
+        #MainWindow.setMenuBar(self.menubar)
         self.actionExit = QtGui.QAction(MainWindow)
         self.actionExit.setObjectName('actionExit')
         self.actionAbout = QtGui.QAction(MainWindow)
