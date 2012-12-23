@@ -29,7 +29,7 @@ class Ui_plotWindow(object):
         #self.graphicsView.setObjectName('graphicsView')
         #self.gridLayout.addWidget(self.graphicsView, 0, 1, 1, 1)
         self.treeWidget = QtGui.QTreeWidget(plotWindow)
-        self.treeWidget.setMaximumSize(QtCore.QSize(200, 16777215))
+        self.treeWidget.setMaximumSize(QtCore.QSize(220, 16777215))
         self.treeWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.treeWidget.setRootIsDecorated(False)
         self.treeWidget.setItemsExpandable(False)

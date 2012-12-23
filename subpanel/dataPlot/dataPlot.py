@@ -239,4 +239,4 @@ class dataPlot(QtGui.QWidget, subpanel):
                             self.animated_plots[i].plot.value_mapper.range.remove(self.animated_plots[i].plot.value)
                             self.animated_plots[i].plot.request_redraw()
 
-                    legendRow.setText(2, str(round(dataValue, 6)))
+                    legendRow.setText(2, str(round(dataValue, 3)))
